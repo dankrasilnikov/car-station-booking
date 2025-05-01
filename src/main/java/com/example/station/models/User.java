@@ -1,14 +1,13 @@
 package com.example.station.models;
 
-import javax.persistence.*;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.persistence.*;
+
+
 import java.util.Objects;
-import java.util.Set;
+
 
 @Entity
-@Table(name = "users",
+@Table(name = "users",schema = "public",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "email")
         })
@@ -21,17 +20,6 @@ public class User {
     private String secondname;
     private String email;
     private String password;
-    private boolean isActivated = false;
-    private String activationCode;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Reservation> reservations = new ArrayList<>();
-    @Column(name = "activation_date")
-    private Timestamp activationDate;
-
-    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_role", joinColumns = @JoinColumn (name = "user_id"))
-    @Enumerated(EnumType.STRING)
-    private Set<Role> roles;
 
     public User(String firstname,String secondname, String email, String password) {
         this.firstname = firstname;
@@ -64,13 +52,7 @@ public class User {
         return firstname;
     }
 
-    public boolean isActivated() {
-        return isActivated;
-    }
 
-    public void setActivated(boolean activated) {
-        isActivated = activated;
-    }
 
     public void setFirstname(String firstname) {
         this.firstname = firstname;
@@ -105,28 +87,5 @@ public class User {
         this.password = password;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
-    }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
-
-    public String getActivationCode() {
-        return activationCode;
-    }
-
-    public void setActivationCode(String activationCode) {
-        this.activationCode = activationCode;
-    }
-
-    public Timestamp getActivationDate() {
-        return activationDate;
-    }
-
-    public void setActivationDate(Timestamp activationDate) {
-        this.activationDate = activationDate;
-    }
 }
