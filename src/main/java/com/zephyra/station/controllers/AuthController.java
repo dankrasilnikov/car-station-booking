@@ -1,10 +1,8 @@
-package com.example.station.controllers;
+package com.zephyra.station.controllers;
 
-import com.example.station.pojo.RegisterRequest;
-import com.example.station.service.SupabaseAuthService;
+import com.zephyra.station.pojo.RegisterRequest;
+import com.zephyra.station.service.SupabaseAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 

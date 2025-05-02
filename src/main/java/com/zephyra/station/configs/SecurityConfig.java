@@ -1,4 +1,4 @@
-package com.example.station.configs;
+package com.zephyra.station.configs;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package com.example.station.pojo;
+package com.zephyra.station.pojo;
 
 public class RegisterRequest {
     private String email;

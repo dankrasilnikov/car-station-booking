@@ -1,4 +1,4 @@
-package com.example.station.models;
+package com.zephyra.station.models;
 
 import jakarta.persistence.*;
 

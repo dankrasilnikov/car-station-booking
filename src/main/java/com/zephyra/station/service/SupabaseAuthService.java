@@ -1,7 +1,7 @@
-package com.example.station.service;
+package com.zephyra.station.service;
 
-import com.example.station.models.User;
-import com.example.station.repository.UserRepository;
+import com.zephyra.station.models.User;
+import com.zephyra.station.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
