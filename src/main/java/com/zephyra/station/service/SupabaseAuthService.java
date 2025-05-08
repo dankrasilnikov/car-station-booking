@@ -1,5 +1,7 @@
 package com.zephyra.station.service;
 
+import com.nimbusds.jose.shaded.gson.JsonObject;
+import com.nimbusds.jose.shaded.gson.JsonParser;
 import com.zephyra.station.models.User;
 import com.zephyra.station.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,25 +33,42 @@ public class SupabaseAuthService {
                 .build();
     }
 
-//    public Mono<String> registerUser(String email, String password) {
-//        return webClient.post()
-//                .uri("/signup")
-//                .bodyValue("""
-//                        {
-//                            "email": "%s",
-//                            "password": "%s"
-//                        }
-//                        """.formatted(email, password))
-//                .retrieve()
-//                .bodyToMono(String.class);
-//    }
+//public Mono<String> registerUser(String email, String password) {
+//    return Mono.fromCallable(() -> {
+//                Optional<User> existingUser = userRepository.findByEmail(email);
+//                if (existingUser.isPresent()) {
+//                    throw new RuntimeException("User with this email already exists");
+//                }
+//
+//                return null;
+//            })
+//            .then(
+//                    webClient.post()
+//                            .uri("/signup")
+//                            .bodyValue("""
+//                                {
+//                                    "email": "%s",
+//                                    "password": "%s"
+//                                }
+//                                """.formatted(email, password))
+//                            .retrieve()
+//                            .bodyToMono(String.class)
+//                            .flatMap(response -> {
+//                                User newUser = new User();
+//                                newUser.setEmail(email);
+//                                newUser.setPassword(password);
+//
+//                                userRepository.save(newUser);
+//                                return Mono.just(response);
+//                            })
+//            );
+//}
 public Mono<String> registerUser(String email, String password) {
     return Mono.fromCallable(() -> {
                 Optional<User> existingUser = userRepository.findByEmail(email);
                 if (existingUser.isPresent()) {
                     throw new RuntimeException("User with this email already exists");
                 }
-
                 return null;
             })
             .then(
@@ -64,9 +83,14 @@ public Mono<String> registerUser(String email, String password) {
                             .retrieve()
                             .bodyToMono(String.class)
                             .flatMap(response -> {
+                                // Парсим JSON-ответ
+                                JsonObject jsonResponse = JsonParser.parseString(response).getAsJsonObject();
+                                String supabaseId = jsonResponse.get("id").getAsString(); // Берём поле "id"
+
                                 User newUser = new User();
                                 newUser.setEmail(email);
                                 newUser.setPassword(password);
+                                newUser.setSupabaseId(supabaseId); // сохраняем supabase id
 
                                 userRepository.save(newUser);
                                 return Mono.just(response);
@@ -85,4 +109,5 @@ public Mono<String> registerUser(String email, String password) {
                 .retrieve()
                 .bodyToMono(String.class);
     }
+
 }

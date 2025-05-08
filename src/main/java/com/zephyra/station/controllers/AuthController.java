@@ -1,6 +1,6 @@
 package com.zephyra.station.controllers;
 
-import com.zephyra.station.pojo.RegisterRequest;
+import com.zephyra.station.dto.RegisterRequest;
 import com.zephyra.station.service.SupabaseAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

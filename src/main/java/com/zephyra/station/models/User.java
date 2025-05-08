@@ -16,6 +16,8 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @Column(name = "supabase_id", unique = true)
+    private String supabaseId;
     private String firstname;
     private String secondname;
     private String email;
@@ -52,7 +54,13 @@ public class User {
         return firstname;
     }
 
+    public String getSupabaseId() {
+        return supabaseId;
+    }
 
+    public void setSupabaseId(String supabaseId) {
+        this.supabaseId = supabaseId;
+    }
 
     public void setFirstname(String firstname) {
         this.firstname = firstname;
