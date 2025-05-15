@@ -12,7 +12,7 @@ BEGIN
             VALUES (
                 station_id,                                -- ID заправки
                 today + INTERVAL '1 hour' * hour_counter,  -- Слот времени
-                5                                          -- Стартовое количество слотов
+                2                                          -- Стартовое количество слотов
             );
             hour_counter := hour_counter + 1;
         END LOOP;

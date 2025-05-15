@@ -13,7 +13,13 @@ public class Reservation {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "gas_station_id", nullable = false)
+    @JoinColumn(
+            name = "gas_station_id",
+            nullable = false,
+            foreignKey = @ForeignKey(
+                    foreignKeyDefinition = "FOREIGN KEY (gas_station_id) REFERENCES gas_stations(id) ON DELETE CASCADE"
+            )
+    )
     private GasStation gasStation;
 
     @ManyToOne

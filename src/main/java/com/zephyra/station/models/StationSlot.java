@@ -12,8 +12,15 @@ public class StationSlot {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
     @ManyToOne
-    @JoinColumn(name = "gas_station_id", nullable = false)
+    @JoinColumn(
+            name = "gas_station_id",
+            nullable = false,
+            foreignKey = @ForeignKey(
+                    foreignKeyDefinition = "FOREIGN KEY (gas_station_id) REFERENCES gas_stations(id) ON DELETE CASCADE"
+            )
+    )
     private GasStation gasStation;
 
     private LocalDateTime slotTime; // начало часа (например, 2025-05-08 11:00)
