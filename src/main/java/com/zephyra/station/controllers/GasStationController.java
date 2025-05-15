@@ -47,51 +47,7 @@ public class GasStationController {
                 .collect(Collectors.toList());
     }
 
-//    @PostMapping("/book")
-//    public ResponseEntity<String> reserveStation(@RequestBody ReservationRequest request,
-//                                                 @RequestParam LocalDateTime startTime) {
-//
-//        if (startTime.isBefore(LocalDateTime.now())) {
-//            return ResponseEntity.badRequest().body("Cannot book in the past");
-//        }
-//
-//        LocalDateTime slotTime = startTime.withMinute(0).withSecond(0).withNano(0); // округляем до начала часа
-//
-//        Optional<User> userOpt = userRepository.findById(request.getUserId());
-//        Optional<GasStation> stationOpt = gasStationRepository.findById(request.getGasStationId());
-//
-//        if (userOpt.isEmpty() || stationOpt.isEmpty()) {
-//            return ResponseEntity.badRequest().body("User or station not found");
-//        }
-//
-//        GasStation station = stationOpt.get();
-//        Optional<StationSlot> slotOpt = stationSlotRepository.findByGasStationAndSlotTime(station, slotTime);
-//
-//        if (slotOpt.isEmpty()) {
-//            return ResponseEntity.badRequest().body("No available slot at this time");
-//        }
-//
-//        StationSlot slot = slotOpt.get();
-//
-//        if (slot.getAvailableSlots() <= 0) {
-//            return ResponseEntity.badRequest().body("No free slots available at this hour");
-//        }
-//
-//        // Всё ок: создаём бронь
-//        Reservation reservation = new Reservation();
-//        reservation.setUser(userOpt.get());
-//        reservation.setGasStation(station);
-//        reservation.setStartTime(slotTime);
-//        reservation.setEndTime(slotTime.plusHours(1)); // автоматическое бронирование ровно на час
-//
-//        reservationRepository.save(reservation);
-//
-//        // уменьшаем количество слотов
-//        slot.setAvailableSlots(slot.getAvailableSlots() - 1);
-//        stationSlotRepository.save(slot);
-//
-//        return ResponseEntity.ok("Reservation successful!");
-//    }
+
 @PostMapping("/book")
 public ResponseEntity<String> reserveStation(@RequestParam LocalDateTime startTime,
                                              @RequestBody ReservationRequest request) {

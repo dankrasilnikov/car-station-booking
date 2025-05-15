@@ -18,14 +18,13 @@ public class User {
     private long id;
     @Column(name = "supabase_id", unique = true)
     private String supabaseId;
-    private String firstname;
-    private String secondname;
     private String email;
     private String password;
+    @Enumerated(EnumType.STRING)
+    private Role role = Role.USER;  ///!!!!!!!!!!!!!!!!!!!!!!!
 
-    public User(String firstname,String secondname, String email, String password) {
-        this.firstname = firstname;
-        this.secondname = secondname;
+    public User( String email, String password) {
+
         this.email = email;
         this.password = password;
     }
@@ -50,8 +49,12 @@ public class User {
         return id;
     }
 
-    public String getFirstname() {
-        return firstname;
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public String getSupabaseId() {
@@ -62,17 +65,6 @@ public class User {
         this.supabaseId = supabaseId;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public String getSecondname() {
-        return secondname;
-    }
-
-    public void setSecondname(String secondname) {
-        this.secondname = secondname;
-    }
 
     public void setId(long id) {
         this.id = id;
