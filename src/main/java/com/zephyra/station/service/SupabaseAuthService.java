@@ -33,36 +33,6 @@ public class SupabaseAuthService {
                 .build();
     }
 
-//public Mono<String> registerUser(String email, String password) {
-//    return Mono.fromCallable(() -> {
-//                Optional<User> existingUser = userRepository.findByEmail(email);
-//                if (existingUser.isPresent()) {
-//                    throw new RuntimeException("User with this email already exists");
-//                }
-//
-//                return null;
-//            })
-//            .then(
-//                    webClient.post()
-//                            .uri("/signup")
-//                            .bodyValue("""
-//                                {
-//                                    "email": "%s",
-//                                    "password": "%s"
-//                                }
-//                                """.formatted(email, password))
-//                            .retrieve()
-//                            .bodyToMono(String.class)
-//                            .flatMap(response -> {
-//                                User newUser = new User();
-//                                newUser.setEmail(email);
-//                                newUser.setPassword(password);
-//
-//                                userRepository.save(newUser);
-//                                return Mono.just(response);
-//                            })
-//            );
-//}
 public Mono<String> registerUser(String email, String password) {
     return Mono.fromCallable(() -> {
                 Optional<User> existingUser = userRepository.findByEmail(email);
@@ -89,7 +59,6 @@ public Mono<String> registerUser(String email, String password) {
 
                                 User newUser = new User();
                                 newUser.setEmail(email);
-                                newUser.setPassword(password);
                                 newUser.setSupabaseId(supabaseId); // сохраняем supabase id
 
                                 userRepository.save(newUser);

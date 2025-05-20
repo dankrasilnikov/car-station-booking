@@ -1,7 +1,10 @@
 package com.zephyra.station.handler;
 
 import com.zephyra.station.errors.BookingException;
+import com.zephyra.station.errors.ConnectorNotFoundException;
+import com.zephyra.station.errors.SlotBusyException;
 import com.zephyra.station.errors.UserNotFoundException;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -14,7 +17,14 @@ public class GlobalErrorHandler {
     public ResponseEntity<String> handleBookingException(BookingException ex) {
         return ResponseEntity.badRequest().body(ex.getMessage());
     }
-
+    @ExceptionHandler(SlotBusyException.class)
+    public ResponseEntity<String> handleSlotBusyException(SlotBusyException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
+    @ExceptionHandler(ConnectorNotFoundException.class)
+    public ResponseEntity<String> handleSlotBusyException(ConnectorNotFoundException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());

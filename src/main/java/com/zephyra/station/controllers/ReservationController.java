@@ -1,0 +1,31 @@
+package com.zephyra.station.controllers;
+
+import com.zephyra.station.dto.BookRequest;
+import com.zephyra.station.dto.ReservationDTO;
+import com.zephyra.station.service.ReservationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/reservations")
+public class ReservationController {
+    @Autowired
+    ReservationService reservationService;
+    @PostMapping("/book")
+    public ResponseEntity<ReservationDTO> book(@Validated @RequestBody ReservationDTO req,
+                               @AuthenticationPrincipal Jwt principal) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String supabaseId = jwt.getClaimAsString("sub");
+        return ResponseEntity.ok(reservationService.book(req,supabaseId));
+    }
+}

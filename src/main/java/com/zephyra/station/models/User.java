@@ -7,7 +7,7 @@ import java.util.Objects;
 
 
 @Entity
-@Table(name = "users",schema = "public",
+@Table(name = "app_user",schema = "public",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "email")
         })
@@ -18,15 +18,15 @@ public class User {
     private long id;
     @Column(name = "supabase_id", unique = true)
     private String supabaseId;
+    private String username;
     private String email;
-    private String password;
     @Enumerated(EnumType.STRING)
     private Role role = Role.ADMIN;  ///!!!!!!!!!!!!!!!!!!!!!!!
 
-    public User( String email, String password) {
+    public User( String email, String username) {
 
         this.email = email;
-        this.password = password;
+        this.username = username;
     }
 
     public User() {}
@@ -79,13 +79,6 @@ public class User {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
 
 }

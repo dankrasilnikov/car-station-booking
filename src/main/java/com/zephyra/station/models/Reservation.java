@@ -1,57 +1,42 @@
 package com.zephyra.station.models;
 
-import jakarta.persistence.*;
+import com.vladmihalcea.hibernate.type.range.PostgreSQLRangeType;
+import com.vladmihalcea.hibernate.type.range.Range;
 
-import java.time.LocalDateTime;
+import jakarta.persistence.*;
+import org.hibernate.annotations.Type;
+
+import java.time.Instant;
+import java.time.ZonedDateTime;
+
 
 @Entity
-@Table(name = "reservations")
+@Table(name = "reservation")
 public class Reservation {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(
-            name = "gas_station_id",
-            nullable = false,
-            foreignKey = @ForeignKey(
-                    foreignKeyDefinition = "FOREIGN KEY (gas_station_id) REFERENCES gas_stations(id) ON DELETE CASCADE"
-            )
-    )
-    private GasStation gasStation;
+    @ManyToOne(fetch = FetchType.LAZY) private User user;
+    @ManyToOne(fetch = FetchType.LAZY) private Connector connector;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    /** Диапазон времени [start, end) – PostgreSQL tstzrange */
+    @Type(PostgreSQLRangeType.class)
+    @Column(columnDefinition = "tstzrange", nullable = false)
+    private Range<ZonedDateTime> period;
 
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    @Enumerated(EnumType.STRING)
+    private ReservationStatus status = ReservationStatus.HOLD;
+
 
     public Reservation() {}
 
-    public Reservation(GasStation gasStation, User user, LocalDateTime startTime, LocalDateTime endTime) {
-        this.gasStation = gasStation;
-        this.user = user;
-        this.startTime = startTime;
-        this.endTime = endTime;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
+    public Reservation(Long id, User user, Connector connector, Range<ZonedDateTime> period, ReservationStatus status) {
         this.id = id;
-    }
-
-    public GasStation getGasStation() {
-        return gasStation;
-    }
-
-    public void setGasStation(GasStation gasStation) {
-        this.gasStation = gasStation;
+        this.user = user;
+        this.connector = connector;
+        this.period = period;
+        this.status = status;
     }
 
     public User getUser() {
@@ -62,19 +47,36 @@ public class Reservation {
         this.user = user;
     }
 
-    public LocalDateTime getStartTime() {
-        return startTime;
+    public Connector getConnector() {
+        return connector;
     }
 
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
+    public void setConnector(Connector connector) {
+        this.connector = connector;
     }
 
-    public LocalDateTime getEndTime() {
-        return endTime;
+    public Range<ZonedDateTime> getPeriod() {
+        return period;
     }
 
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
+    public void setPeriod(Range<ZonedDateTime> period) {
+        this.period = period;
     }
+
+    public ReservationStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ReservationStatus status) {
+        this.status = status;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
 }

@@ -1,7 +1,9 @@
 package com.zephyra.station.controllers;
 
-import com.zephyra.station.models.GasStation;
-import com.zephyra.station.repository.GasStationRepository;
+import com.zephyra.station.dto.StationCreateDTO;
+import com.zephyra.station.models.Station;
+import com.zephyra.station.repository.StationRepository;
+import com.zephyra.station.service.StationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -11,31 +13,28 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin")
+@PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
     @Autowired
-    private GasStationRepository gasStationRepository;
+    StationRepository gasStationRepository;
+    @Autowired
+    StationService stationService;
 
     @PostMapping("/stations/add")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> addGasStation(@RequestBody GasStation gasStation) {
-        gasStationRepository.save(gasStation);
-        return ResponseEntity.ok("Gas station added");
+    public ResponseEntity<String> addStation(@RequestBody StationCreateDTO dto) {
+        stationService.addStation(dto);
+        return ResponseEntity.ok("Station with " + dto.getConnectorCount() + " connectors created");
     }
 
     @DeleteMapping("/stations/delete/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> deleteGasStation(@PathVariable Long id) {
-        if (!gasStationRepository.existsById(id)) {
-            return ResponseEntity.badRequest().body("Station not found");
-        }
-        gasStationRepository.deleteById(id);
+    public ResponseEntity<String> deleteStation(@PathVariable Long id) {
+        stationService.deleteStation(id);
         return ResponseEntity.ok("Station deleted");
     }
+
     @GetMapping("/stations")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<GasStation>> getAllStations() {
-        List<GasStation> stations = gasStationRepository.findAll();
-        return ResponseEntity.ok(stations);
+    public ResponseEntity<List<Station>> getAllStations() {
+        return ResponseEntity.ok(stationService.getAllStations());
     }
 }
