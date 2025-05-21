@@ -78,5 +78,15 @@ public Mono<String> registerUser(String email, String password) {
                 .retrieve()
                 .bodyToMono(String.class);
     }
-
+    public Mono<String> refreshAccessToken(String refreshToken) {
+        return webClient.post()
+                .uri("/token?grant_type=refresh_token")
+                .bodyValue("""
+                    {
+                        "refresh_token": "%s"
+                    }
+                    """.formatted(refreshToken))
+                .retrieve()
+                .bodyToMono(String.class);
+    }
 }
