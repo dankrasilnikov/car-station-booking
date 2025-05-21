@@ -8,9 +8,11 @@ import com.zephyra.station.repository.ConnectorRepository;
 
 import com.zephyra.station.service.ReservationService;
 
+import com.zephyra.station.service.StationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
@@ -25,6 +27,8 @@ public class StationController {
 
     @Autowired
     ConnectorRepository connectorRepo;
+    @Autowired
+    StationService stationService;
 
     /** GET http://localhost:8080/api/stations/2/free?timestamp=1747731600 */
     @GetMapping("/{id}/free")
@@ -38,6 +42,11 @@ public class StationController {
         return connectorRepo.findFreeAt(id, start, end).stream()
                 .map(ConnectorDTO::from)
                 .toList();
+    }
+
+    @GetMapping("/getall")
+    public ResponseEntity<List<Station>> getAllStations() {
+        return ResponseEntity.ok(stationService.getAllStations());
     }
 
 }
