@@ -3,9 +3,12 @@ package com.zephyra.station.controllers;
 import com.vladmihalcea.hibernate.type.range.Range;
 import com.zephyra.station.dto.ConnectorDTO;
 import com.zephyra.station.errors.BookingInThePastException;
+import com.zephyra.station.models.ConnectorStatus;
 import com.zephyra.station.models.Station;
 import com.zephyra.station.repository.ConnectorRepository;
 
+import com.zephyra.station.repository.ReservationRepository;
+import com.zephyra.station.repository.StationRepository;
 import com.zephyra.station.service.ReservationService;
 
 import com.zephyra.station.service.StationService;
@@ -15,11 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/stations")
@@ -27,6 +28,10 @@ public class StationController {
 
     @Autowired
     ConnectorRepository connectorRepo;
+    @Autowired
+    ReservationRepository reservationRepo;
+    @Autowired
+    StationRepository stationRepository;
     @Autowired
     StationService stationService;
 
@@ -42,6 +47,23 @@ public class StationController {
         return connectorRepo.findFreeAt(id, start, end).stream()
                 .map(ConnectorDTO::from)
                 .toList();
+    }
+    @GetMapping("/free")
+    public ResponseEntity<List<Station>> getFreeStationsAt(@RequestParam("timestamp") long timestamp) {
+        ZonedDateTime instant = Instant.ofEpochSecond(timestamp).atZone(ZoneId.of("UTC"));
+
+        List<Station> stations = stationRepository.findStationsWithFreeConnectorsAt(instant);
+
+        for (Station station : stations) {
+            station.setConnectors(
+                    station.getConnectors().stream()
+                            .filter(c -> c.getStatus() == ConnectorStatus.AVAILABLE &&
+                                    reservationRepo.findActiveAt(c.getId(), instant).isEmpty())
+                            .collect(Collectors.toList())
+            );
+        }
+
+        return ResponseEntity.ok(stations);
     }
 
     @GetMapping("/getall")

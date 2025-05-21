@@ -18,4 +18,12 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     @Modifying
     @Query(value = "DELETE FROM reservation WHERE upper(period) < :now", nativeQuery = true)
     void deleteExpired(@Param("now") ZonedDateTime now);
+    @Query(value = """
+    SELECT * FROM reservation
+    WHERE connector_id = :connectorId
+      AND status IN ('HOLD', 'BOOKED', 'STARTED')
+      AND period @> CAST(:instant AS timestamptz)
+    """, nativeQuery = true)
+    List<Reservation> findActiveAt(@Param("connectorId") Long connectorId,
+                                   @Param("instant") ZonedDateTime instant);
 }

@@ -29,5 +29,6 @@ public interface ConnectorRepository extends JpaRepository<Connector, Long> {
 List<Connector> findFreeAt(@Param("stationId") Long stationId,
                            @Param("start") ZonedDateTime start,
                            @Param("end") ZonedDateTime end);
+
     Optional<Connector> findByStationIdAndSeqNum(Long stationId, Integer seqNum);
 }
