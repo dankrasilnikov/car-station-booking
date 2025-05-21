@@ -44,7 +44,7 @@ public class ReservationService {
     public ReservationDTO book(ReservationDTO dto, String supabaseId) {
         Station station = stationRepo.findByTitle(dto.getTitle())
                 .orElseThrow(() -> new StationNotFoundException());
-        Connector connector = connectorRepo.findByStationIdAndSeqNum(station.getId(),dto.getSeqNum())
+        Connector connector = connectorRepo.findByStationIdAndSeqNum(station.getId(), dto.getSeqNum())
                 .orElseThrow(() -> new ConnectorNotFoundException("Connector not found"));
         if (connector.getStatus() != ConnectorStatus.AVAILABLE)
             throw new IllegalStateException("Connector offline");
@@ -54,7 +54,7 @@ public class ReservationService {
         if (start.isBefore(ZonedDateTime.now(ZoneOffset.UTC))) {
             throw new BookingInThePastException("Reservation time cannot be in the past");
         }
-        ZonedDateTime end   = start.plus(dto.getDuration());
+        ZonedDateTime end = start.plus(dto.getDuration());
 
         Range<ZonedDateTime> period = Range.closedOpen(start, end);
 
@@ -70,6 +70,7 @@ public class ReservationService {
             throw new SlotBusyException("Connector busy");
         }
     }
+
     public List<ReservationDTO> getUserReservations(String supabaseId) {
         User user = userRepo.findBySupabaseId(supabaseId)
                 .orElseThrow(UserNotFoundException::new);
@@ -78,6 +79,7 @@ public class ReservationService {
                 .map(ReservationDTO::from)
                 .collect(Collectors.toList());
     }
+
     @Transactional
     public void cancelReservation(Long reservationId, String supabaseId) {
         Reservation reservation = reservationRepo.findById(reservationId)
@@ -87,11 +89,6 @@ public class ReservationService {
             throw new AccessDeniedException("You are not the owner of this reservation");
         }
 
-        if (reservation.getStatus() == ReservationStatus.CANCELLED) {
-            throw new IllegalStateException("Reservation already cancelled");
-        }
-
-        reservation.setStatus(ReservationStatus.CANCELLED);
-        reservationRepo.save(reservation);
+        reservationRepo.delete(reservation);
     }
 }
