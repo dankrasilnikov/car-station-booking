@@ -23,7 +23,9 @@ public class StationService {
             throw new IllegalArgumentException("Connector count must be positive");
         }
         Station station = new Station();
-        station.setTitle(dto.getName());
+        station.setTitle(dto.getTitle());
+        station.setLongitude(dto.getLongitude());
+        station.setLatitude(dto.getLaitude());
         List<Connector> connectors = new ArrayList<>();
         for (int i = 1; i <= dto.getConnectorCount(); i++) {
             Connector connector = new Connector();

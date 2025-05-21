@@ -1,20 +1,18 @@
 package com.zephyra.station.dto;
 
-import java.util.List;
-
 public class StationCreateDTO {
-    private String name;
+    private String title;
     private int connectorCount;
-    private double laitude;
+    private double latitude;
     private double longitude;
 
     // Геттеры/сеттеры
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public int getConnectorCount() {
@@ -26,11 +24,11 @@ public class StationCreateDTO {
     }
 
     public double getLaitude() {
-        return laitude;
+        return latitude;
     }
 
-    public void setLaitude(double laitude) {
-        this.laitude = laitude;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 
     public double getLongitude() {
