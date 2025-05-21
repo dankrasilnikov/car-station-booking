@@ -1,5 +1,6 @@
 package com.zephyra.station.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -12,6 +13,7 @@ public class Connector {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "station_id")
+    @JsonBackReference
     private Station station;
 
     @Column(name = "seq_num")

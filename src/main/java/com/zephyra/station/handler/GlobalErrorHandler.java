@@ -1,9 +1,6 @@
 package com.zephyra.station.handler;
 
-import com.zephyra.station.errors.BookingException;
-import com.zephyra.station.errors.ConnectorNotFoundException;
-import com.zephyra.station.errors.SlotBusyException;
-import com.zephyra.station.errors.UserNotFoundException;
+import com.zephyra.station.errors.*;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +12,14 @@ public class GlobalErrorHandler {
 
     @ExceptionHandler(BookingException.class)
     public ResponseEntity<String> handleBookingException(BookingException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
+    @ExceptionHandler(BookingInThePastException.class)
+    public ResponseEntity<String> handleBookingInThePastException(BookingInThePastException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
+    @ExceptionHandler(ReservationNotFoundException.class)
+    public ResponseEntity<String> handleReservationNotFoundException(ReservationNotFoundException ex) {
         return ResponseEntity.badRequest().body(ex.getMessage());
     }
     @ExceptionHandler(SlotBusyException.class)

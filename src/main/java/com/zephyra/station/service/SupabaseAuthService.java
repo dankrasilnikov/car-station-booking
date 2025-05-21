@@ -33,7 +33,7 @@ public class SupabaseAuthService {
                 .build();
     }
 
-public Mono<String> registerUser(String email, String password) {
+public Mono<String> registerUser(String email, String password, String username) {
     return Mono.fromCallable(() -> {
                 Optional<User> existingUser = userRepository.findByEmail(email);
                 if (existingUser.isPresent()) {
@@ -47,9 +47,10 @@ public Mono<String> registerUser(String email, String password) {
                             .bodyValue("""
                                 {
                                     "email": "%s",
-                                    "password": "%s"
+                                    "password": "%s",
+                                    "username": "%s"
                                 }
-                                """.formatted(email, password))
+                                """.formatted(email, password,username))
                             .retrieve()
                             .bodyToMono(String.class)
                             .flatMap(response -> {
@@ -60,12 +61,13 @@ public Mono<String> registerUser(String email, String password) {
                                 User newUser = new User();
                                 newUser.setEmail(email);
                                 newUser.setSupabaseId(supabaseId); // сохраняем supabase id
-
+                                newUser.setUsername(username);
                                 userRepository.save(newUser);
                                 return Mono.just(response);
                             })
             );
 }
+
     public Mono<String> loginUser(String email, String password) {
         return webClient.post()
                 .uri("/token?grant_type=password")

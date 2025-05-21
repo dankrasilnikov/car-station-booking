@@ -14,11 +14,20 @@ import org.springframework.data.crossstore.ChangeSetPersister;
 
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
@@ -41,6 +50,10 @@ public class ReservationService {
             throw new IllegalStateException("Connector offline");
         ZonedDateTime start = Instant.ofEpochSecond(dto.getStart())
                 .atZone(ZoneOffset.UTC);
+
+        if (start.isBefore(ZonedDateTime.now(ZoneOffset.UTC))) {
+            throw new BookingInThePastException("Reservation time cannot be in the past");
+        }
         ZonedDateTime end   = start.plus(dto.getDuration());
 
         Range<ZonedDateTime> period = Range.closedOpen(start, end);
@@ -57,5 +70,28 @@ public class ReservationService {
             throw new SlotBusyException("Connector busy");
         }
     }
+    public List<ReservationDTO> getUserReservations(String supabaseId) {
+        User user = userRepo.findBySupabaseId(supabaseId)
+                .orElseThrow(UserNotFoundException::new);
 
+        return reservationRepo.findAllByUser(user).stream()
+                .map(ReservationDTO::from)
+                .collect(Collectors.toList());
+    }
+    @Transactional
+    public void cancelReservation(Long reservationId, String supabaseId) {
+        Reservation reservation = reservationRepo.findById(reservationId)
+                .orElseThrow(() -> new ReservationNotFoundException("Reservation not found"));
+
+        if (!reservation.getUser().getSupabaseId().equals(supabaseId)) {
+            throw new AccessDeniedException("You are not the owner of this reservation");
+        }
+
+        if (reservation.getStatus() == ReservationStatus.CANCELLED) {
+            throw new IllegalStateException("Reservation already cancelled");
+        }
+
+        reservation.setStatus(ReservationStatus.CANCELLED);
+        reservationRepo.save(reservation);
+    }
 }

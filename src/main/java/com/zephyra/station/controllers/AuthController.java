@@ -1,6 +1,6 @@
 package com.zephyra.station.controllers;
 
-import com.zephyra.station.dto.RegisterRequest;
+import com.zephyra.station.dto.SupabaseUserDTO;
 import com.zephyra.station.service.SupabaseAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,12 +18,12 @@ public class AuthController {
     private SupabaseAuthService supabaseAuthService;
 
     @PostMapping("/register")
-    public Mono<String> register(@RequestBody RegisterRequest request) {
-        return supabaseAuthService.registerUser(request.getEmail(), request.getPassword());
+    public Mono<String> register(@RequestBody SupabaseUserDTO request) {
+        return supabaseAuthService.registerUser(request.getEmail(), request.getPassword(),request.getUsername());
     }
 
     @PostMapping("/login")
-    public Mono<String> login(@RequestBody RegisterRequest request) {
+    public Mono<String> login(@RequestBody SupabaseUserDTO request) {
         return supabaseAuthService.loginUser(request.getEmail(), request.getPassword());
     }
 

@@ -1,5 +1,6 @@
 package com.zephyra.station.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class Station {
     private Double longitude;
     private boolean active = true;
     @OneToMany(mappedBy = "station", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Connector> connectors = new ArrayList<>();
     public Station() {}
     // Геттеры и сеттеры

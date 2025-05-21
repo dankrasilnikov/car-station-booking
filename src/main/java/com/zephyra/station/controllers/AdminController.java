@@ -13,26 +13,26 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin")
-@PreAuthorize("hasRole('ADMIN')")
+
 public class AdminController {
 
     @Autowired
     StationRepository gasStationRepository;
     @Autowired
     StationService stationService;
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/stations/add")
     public ResponseEntity<String> addStation(@RequestBody StationCreateDTO dto) {
         stationService.addStation(dto);
         return ResponseEntity.ok("Station with " + dto.getConnectorCount() + " connectors created");
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/stations/delete/{id}")
     public ResponseEntity<String> deleteStation(@PathVariable Long id) {
         stationService.deleteStation(id);
         return ResponseEntity.ok("Station deleted");
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/stations")
     public ResponseEntity<List<Station>> getAllStations() {
         return ResponseEntity.ok(stationService.getAllStations());
