@@ -38,11 +38,15 @@ public class StationService {
     }
 
     @Transactional
-    public void deleteStation(String  title) {
-        if (!stationRepo.existsByTitle(title)) {
+    public void deleteStation(String title) {
+        // Заменяем "_" на пробелы
+        String formattedTitle = title.replace("_", " ");
+
+        if (!stationRepo.existsByTitle(formattedTitle)) {
             throw new StationNotFoundException();
         }
-        stationRepo.deleteByTitle(title);
+
+        stationRepo.deleteByTitle(formattedTitle);
     }
 
     @Transactional(readOnly = true)
