@@ -19,11 +19,12 @@ public class UserController {
     private UserRepository userRepository;
 
     @GetMapping("/profile")
-    public ResponseEntity<Map<String, String>> getUsernameBySupabaseId(@RequestParam("supabaseId") String supabaseId) {
+    public ResponseEntity<Map<String, String>> getUserProfileBySupabaseId(@RequestParam("supabaseId") String supabaseId) {
         return userRepository.findBySupabaseId(supabaseId)
                 .map(user -> {
                     Map<String, String> response = new HashMap<>();
                     response.put("username", user.getUsername());
+                    response.put("role", user.getRole().name()); // предполагается, что поле `role` — это enum
                     return ResponseEntity.ok(response);
                 })
                 .orElse(ResponseEntity.notFound().build());
