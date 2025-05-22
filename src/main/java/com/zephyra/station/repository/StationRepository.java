@@ -1,8 +1,8 @@
 package com.zephyra.station.repository;
 
-import com.zephyra.station.models.Connector;
 import com.zephyra.station.models.Station;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -14,6 +14,9 @@ import java.util.Optional;
 @Repository
 public interface StationRepository extends JpaRepository<Station, Long> {
     Optional<Station> findByTitle(String title);
+    @Modifying
+    void deleteByTitle(String title);
+    boolean existsByTitle(String title);
     @Query(value = """
     SELECT DISTINCT s.* FROM station s
     JOIN connector c ON c.station_id = s.id

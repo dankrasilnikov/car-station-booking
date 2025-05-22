@@ -38,11 +38,11 @@ public class StationService {
     }
 
     @Transactional
-    public void deleteStation(Long id) {
-        if (!stationRepo.existsById(id)) {
+    public void deleteStation(String  title) {
+        if (!stationRepo.existsByTitle(title)) {
             throw new StationNotFoundException();
         }
-        stationRepo.deleteById(id);
+        stationRepo.deleteByTitle(title);
     }
 
     @Transactional(readOnly = true)

@@ -24,13 +24,13 @@ public class AdminController {
     @PostMapping("/stations/add")
     public ResponseEntity addStation(@RequestBody StationCreateDTO dto) {
         stationService.addStation(dto);
-        return (ResponseEntity) ResponseEntity.ok();
+        return  ResponseEntity.ok().build();
     }
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/stations/delete/{id}")
-    public ResponseEntity deleteStation(@PathVariable Long id) {
-        stationService.deleteStation(id);
-        return (ResponseEntity) ResponseEntity.ok();
+    @DeleteMapping("/stations/delete/{title}")
+    public ResponseEntity deleteStation(@PathVariable String title) {
+        stationService.deleteStation(title);
+        return  ResponseEntity.ok().build();
     }
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/stations")
