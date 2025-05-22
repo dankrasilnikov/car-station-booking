@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -16,9 +19,13 @@ public class UserController {
     private UserRepository userRepository;
 
     @GetMapping("/profile")
-    public ResponseEntity<String> getUsernameBySupabaseId(@RequestParam("supabaseId") String supabaseId) {
+    public ResponseEntity<Map<String, String>> getUsernameBySupabaseId(@RequestParam("supabaseId") String supabaseId) {
         return userRepository.findBySupabaseId(supabaseId)
-                .map(user -> ResponseEntity.ok(user.getUsername()))
+                .map(user -> {
+                    Map<String, String> response = new HashMap<>();
+                    response.put("username", user.getUsername());
+                    return ResponseEntity.ok(response);
+                })
                 .orElse(ResponseEntity.notFound().build());
     }
 }
