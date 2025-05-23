@@ -38,17 +38,13 @@ public class UserController {
            @RequestHeader("Authorization") String bearerToken,
             @RequestBody Map<String, String> body) {
         String newPassword = body.get("newPassword");
-
         return authService.changeUserPassword(bearerToken, newPassword)
                 .map(ResponseEntity::ok)
                 .onErrorResume(e -> Mono.just(ResponseEntity.badRequest().body(e.getMessage())));
     }
     @PostMapping("/profile/changeusername")
-    public Mono<ResponseEntity<Void>> changeUsername(
-            @RequestBody Map<String, String> body) {
-
+    public Mono<ResponseEntity<Void>> changeUsername(@RequestBody Map<String, String> body) {
         String newUsername = body.get("newUsername");
-
         return userService.changeUsername(newUsername)
                 .map(success -> ResponseEntity.ok().<Void>build())
                 .onErrorResume(e -> Mono.just(ResponseEntity.badRequest().build()));

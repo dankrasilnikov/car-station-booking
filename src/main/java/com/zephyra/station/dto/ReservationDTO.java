@@ -6,6 +6,7 @@ import com.zephyra.station.models.Reservation;
 import java.time.*;
 
 public class ReservationDTO {
+    private Long id;
     private String title;      // название станции
     private Integer seqNum;    // номер коннектора
     private Long start;        // timestamp начала (в секундах)
@@ -13,11 +14,12 @@ public class ReservationDTO {
 
     public ReservationDTO() {}
 
-    public ReservationDTO(String title, Integer seqNum, Long start, Duration duration) {
+    public ReservationDTO(String title, Integer seqNum, Long start, Duration duration, Long id) {
         this.title = title;
         this.seqNum = seqNum;
         this.start = start;
         this.duration = duration;
+        this.id = id;
     }
 
     public static ReservationDTO from(Reservation reservation) {
@@ -31,7 +33,8 @@ public class ReservationDTO {
                 reservation.getConnector().getStation().getTitle(),
                 reservation.getConnector().getSeqNum(),
                 start.toInstant().getEpochSecond(),
-                duration
+                duration,
+                reservation.getId()
         );
     }
 
@@ -61,6 +64,14 @@ public class ReservationDTO {
 
     public Duration getDuration() {
         return duration;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public void setDuration(Duration duration) {
