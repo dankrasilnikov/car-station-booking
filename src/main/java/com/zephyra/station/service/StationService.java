@@ -39,7 +39,6 @@ public class StationService {
 
     @Transactional
     public void deleteStation(String title) {
-        // Заменяем "_" на пробелы
         String formattedTitle = title.replace("_", " ");
 
         if (!stationRepo.existsByTitle(formattedTitle)) {

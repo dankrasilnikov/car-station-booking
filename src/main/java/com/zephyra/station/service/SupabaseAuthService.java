@@ -91,4 +91,28 @@ public Mono<String> registerUser(String email, String password, String username)
                 .retrieve()
                 .bodyToMono(String.class);
     }
+    public Mono<String> changeUserPassword(String bearerToken, String newPassword) {
+        return webClient.put() // Supabase требует PUT на /user
+                .uri("/user")
+                .header(HttpHeaders.AUTHORIZATION, bearerToken)
+                .bodyValue("""
+                {
+                    "password": "%s"
+                }
+                """.formatted(newPassword))
+                .retrieve()
+                .bodyToMono(String.class);
+    }
+    public Mono<String> sendPasswordResetEmail(String email) {
+        return webClient.post()
+                .uri("/recover")
+                .header(HttpHeaders.CONTENT_TYPE, "application/json")
+                .bodyValue("""
+                {
+                    "email": "%s"
+                }
+                """.formatted(email))
+                .retrieve()
+                .bodyToMono(String.class);
+    }
 }

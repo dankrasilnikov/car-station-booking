@@ -38,4 +38,12 @@ public class AuthController {
                 .map(tokenResponse -> ResponseEntity.ok().body(tokenResponse))
                 .onErrorResume(e -> Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh_token")));
     }
+    @PostMapping("/forgotpass")
+    public Mono<ResponseEntity<String>> forgotPassword(@RequestBody Map<String, String> body) {
+        String email = body.get("email");
+
+        return supabaseAuthService.sendPasswordResetEmail(email)
+                .map(ResponseEntity::ok)
+                .onErrorResume(e -> Mono.just(ResponseEntity.badRequest().body(e.getMessage())));
+    }
 }

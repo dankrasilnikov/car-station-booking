@@ -1,12 +1,11 @@
 package com.zephyra.station.controllers;
 
 import com.zephyra.station.repository.UserRepository;
+import com.zephyra.station.service.SupabaseAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +16,8 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    SupabaseAuthService authService;
 
     @GetMapping("/profile")
     public ResponseEntity<Map<String, String>> getUserProfileBySupabaseId(@RequestParam("supabaseId") String supabaseId) {
@@ -29,4 +30,15 @@ public class UserController {
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
+    @PostMapping("/profile/changepass")
+    public Mono<ResponseEntity<String>> changePassword(
+           @RequestHeader("Authorization") String bearerToken,
+            @RequestBody Map<String, String> body) {
+        String newPassword = body.get("newPassword");
+
+        return authService.changeUserPassword(bearerToken, newPassword)
+                .map(ResponseEntity::ok)
+                .onErrorResume(e -> Mono.just(ResponseEntity.badRequest().body(e.getMessage())));
+    }
+
 }
