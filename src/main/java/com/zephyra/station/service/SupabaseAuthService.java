@@ -107,12 +107,12 @@ public Mono<String> registerUser(String email, String password, String username)
         String redirectUrl = "http://localhost:3000/forgotpass";
         return webClient.post()
                 .uri("/recover")
+                .header("redirect_to", redirectUrl)  // Добавляем в заголовок
                 .bodyValue("""
                 {
-                    "email": "%s",
-                    "redirect_to": "%s"
+                    "email": "%s"
                 }
-                """.formatted(email, redirectUrl))
+                """.formatted(email))
                 .retrieve()
                 .bodyToMono(String.class);
     }
