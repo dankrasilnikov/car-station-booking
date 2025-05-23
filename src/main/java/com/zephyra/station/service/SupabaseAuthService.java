@@ -104,14 +104,16 @@ public Mono<String> registerUser(String email, String password, String username)
                 .bodyToMono(String.class);
     }
     public Mono<String> sendPasswordResetEmail(String email) {
+        String redirectTo = "http://localhost:3000/forgotpass";
         return webClient.post()
+
                 .uri("/recover")
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
                 .bodyValue("""
                 {
                     "email": "%s"
                 }
-                """.formatted(email))
+                """.formatted(email,redirectTo))
                 .retrieve()
                 .bodyToMono(String.class);
     }
