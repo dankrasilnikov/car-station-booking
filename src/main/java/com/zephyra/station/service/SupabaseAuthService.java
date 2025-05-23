@@ -92,7 +92,7 @@ public Mono<String> registerUser(String email, String password, String username)
                 .bodyToMono(String.class);
     }
     public Mono<String> changeUserPassword(String bearerToken, String newPassword) {
-        return webClient.put() // Supabase требует PUT на /user
+        return webClient.put()
                 .uri("/user")
                 .header(HttpHeaders.AUTHORIZATION, bearerToken)
                 .bodyValue("""
@@ -104,16 +104,15 @@ public Mono<String> registerUser(String email, String password, String username)
                 .bodyToMono(String.class);
     }
     public Mono<String> sendPasswordResetEmail(String email) {
-        String redirectTo = "http://localhost:3000/forgotpass";
+        String redirectUrl = "http://localhost:3000/forgotpass";
         return webClient.post()
-
                 .uri("/recover")
-                .header(HttpHeaders.CONTENT_TYPE, "application/json")
                 .bodyValue("""
                 {
-                    "email": "%s"
+                    "email": "%s",
+                    "redirect_to": "%s"
                 }
-                """.formatted(email,redirectTo))
+                """.formatted(email, redirectUrl))
                 .retrieve()
                 .bodyToMono(String.class);
     }
